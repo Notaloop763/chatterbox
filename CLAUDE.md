@@ -34,4 +34,4 @@ Cross-cutting behavior to preserve:
 
 ## Branch context
 
-Branch `relax-dependency-pins` is loosening the exact pins in `pyproject.toml` so the package can coexist with ebook2audiobook. `DEPENDENCY_MIGRATION.md` holds the target pins, constraints and test plan; its status is "not started" and nothing there is verified. Read it before touching dependencies.
+Branch `relax-dependency-pins` loosened the exact pins in `pyproject.toml` so ebook2audiobook (e2a) can use chatterbox. Chatterbox stays a standalone project: the maintainer will not take regressions for a project they don't own, so a change is acceptable only if standalone chatterbox works as before (old pins still pass, see the floor test). e2a's `requirements.txt` resolves with the relaxed pins; the pins are tested on CPU only. `DEPENDENCY_MIGRATION.md` holds the old pins, constraints and results. Read it before touching dependencies.

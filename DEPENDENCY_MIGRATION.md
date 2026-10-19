@@ -3,9 +3,13 @@
 Goal: loosen `pyproject.toml` pins so `chatterbox-tts` can be installed next to
 ebook2audiobook (e2a) without downgrading torch/gradio/numpy for every other engine.
 
+Acceptance bar: standalone chatterbox works as before. The upstream maintainer will not take
+regressions for e2a's sake, so every relaxed pin must keep the old pins' versions working (the
+"Floors" row under Results). e2a compatibility is the motivation, not a test target.
+
 Status: **pins relaxed in `pyproject.toml`; smoke-tested on CPU only** (see "Results").
-`resemble-perth` is still the git `@master` dependency. Whether e2a's own venv resolves
-with these pins has not been tested.
+`resemble-perth` is still the git `@master` dependency. e2a's `requirements.txt` plus
+torch 2.7.1 resolves and passes the smoke test (see "Results").
 
 ## Constraints from e2a (`lib/conf.py`, `requirements.txt`)
 
@@ -63,10 +67,11 @@ Found by the reference-audio test: `ChatterboxTurboTTS.norm_loudness` upcast the
 Floors: the old pins (numpy 1.26.4, torch 2.6.0, transformers 5.2.0, diffusers 0.29.0, librosa 0.11.0, safetensors 0.5.3, gradio 6.8.0, conformer 0.3.2, pykakasi 2.3.0) were installed together and passed all four classes (multilingual, Turbo, Nano with default voice; TTS, multilingual, Turbo, VC with a reference clip). numpy floor raised from 1.24 to 1.26 because 1.26 is the lowest tested (and coqui-tts needs it).
 The scripts live outside the repo (`~/chatterbox-smoke/`).
 
+e2a venv check (2026-10-19): e2a `requirements.txt` + `torch==2.7.1`/`torchaudio==2.7.1` + this package resolves with `uv pip compile` on 3.12 and 3.10 (3.12: numpy 2.5.4, transformers 5.20.2, librosa 1.0.0, gradio 6.29.1, coqui-tts 0.27.5; 3.10: numpy 2.2.6, librosa 0.11.0). Installed on 3.12 (CPU smoke test: multilingual en/fr, Turbo, Nano all pass; `pip check` clean). e2a installs torch separately via its `torch_matrix`, so it is not in its `requirements.txt`; 2.7.1 is its base.
+
 ## Not covered
 
 - GPU backends (CUDA, ROCm, XPU, MPS). No GPU on the dev machine.
 - Audio quality (only length and finite samples are checked) and the Gradio demo apps.
 - Reference-audio cloning (`audio_prompt_path`) and `ChatterboxVC` were tested only on 3.12 with newest torch and on 3.10, not on every row above.
 - torch 2.4 and 2.5 (the `>=2.6` floor excludes them).
-- Whether e2a's own venv resolves with these loosened pins.
