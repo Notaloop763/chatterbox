@@ -129,6 +129,15 @@ Removing the dead and duplicated code below saves about 1,000 lines and 2 depend
 - Fix: add `import logging`.
 - If skipped: a confusing crash later, for whoever adds batching.
 
+## 19. Demo apps were not launched after gradio became an extra
+
+- Where: `gradio_tts_app.py`, `gradio_tts_turbo_app.py`, `gradio_vc_app.py`, `multilingual_app.py`
+- Problem: gradio moved to the `demo` extra and `import gradio` was checked, but no demo app
+  was started. Gradio 6.8 and 6.30 both resolve, and the audit only checked that the call
+  shapes bind. Whether the pages load and generate audio is untested.
+- Fix: in a venv with `pip install -e ".[demo]"`, start each app on CPU and run one generation.
+- If skipped: a demo that fails at launch is found by a user, not by us.
+
 ## Not checked
 
 - Read in full: `hifigan.py`, `decoder.py`, `xvector.py`, `matcha/decoder.py`,
