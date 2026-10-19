@@ -60,6 +60,9 @@ Alternatively, you can install from source:
 git clone https://github.com/resemble-ai/chatterbox.git
 cd chatterbox
 pip install -e .
+
+# only for the Gradio demo apps (gradio_*_app.py, multilingual_app.py)
+pip install -e ".[demo]"
 ```
 We developed and tested Chatterbox on Python 3.11 on Debian 11 OS; the versions of the dependencies are pinned in `pyproject.toml` to ensure consistency. You can modify the code or dependencies in this installation mode.
 

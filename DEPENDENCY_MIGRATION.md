@@ -23,7 +23,7 @@ with these pins has not been tested.
 | torch, torchaudio | `==2.6.0` (py<3.14) | `>=2.6` | try 2.7.1 first (e2a base); 2.4/2.5 only if cheap, unverified |
 | transformers | `==5.2.0` | `>=5.2` | no upper bound unless the smoke test breaks |
 | numpy | `<2` (py<3.13) | drop the `<2` cap | likely the main source of fails |
-| gradio | `==6.8.0` | `>=6.8`, or move to an optional extra | only the demo apps use it, not the library |
+| gradio | `==6.8.0` | removed from `dependencies`; optional extra `demo = ["gradio>=6.8"]` | only the demo apps use it, not the library. Demo apps need `pip install -e ".[demo]"`. Status: done, verified by install check only (no demo app launched) |
 | librosa | `==0.11.0` | `>=0.11` | check numpy 2 support |
 | safetensors | `==0.5.3` | `>=0.5.3` | |
 | diffusers | `==0.29.0` | `>=0.29` | pinned old; check against transformers 5.x |

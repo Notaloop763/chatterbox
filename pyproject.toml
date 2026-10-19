@@ -21,10 +21,12 @@ dependencies = [
     "safetensors>=0.5.3",
     "spacy-pkuseg",
     "pykakasi>=2.3",
-    "gradio>=6.8",
     "pyloudnorm",
     "omegaconf"
 ]
+
+[project.optional-dependencies]
+demo = ["gradio>=6.8"]
 
 [project.urls]
 Homepage = "https://github.com/resemble-ai/chatterbox"
