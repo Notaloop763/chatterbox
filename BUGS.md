@@ -46,7 +46,7 @@ demos run locally or behind a Gradio share link with a few users.
 - If skipped: Chinese output is garbage with only a log warning, e.g. in an offline
   ebook2audiobook install.
 
-## 4. `gradio==6.8.0` is a hard library dependency
+## 4. `gradio==6.8.0` is a hard library dependency (fixed: now the `demo` extra)
 
 - Where: `pyproject.toml:28`
 - Problem: nothing in `src/` imports gradio; only the demo apps do. ebook2audiobook needs
