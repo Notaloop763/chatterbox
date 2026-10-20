@@ -67,6 +67,13 @@ pip install -e ".[demo]"
 ```
 We developed and tested Chatterbox on Python 3.11 on Debian 11 OS; the minimum dependency versions are set in `pyproject.toml`. You can modify the code or dependencies in this installation mode.
 
+**NVIDIA GPUs:** `pip install chatterbox-tts` pulls the newest PyTorch from PyPI. Since PyTorch 2.11 its default build uses CUDA 13.0, which needs NVIDIA driver 580 or newer and a Turing (GTX 16xx / RTX 20xx) or newer GPU. On an older driver, or a Maxwell, Pascal or Volta GPU (GTX 9xx / 10xx, TITAN V), install PyTorch's CUDA 12.6 build first; pip then keeps it. That build needs driver 525 or newer, and PyTorch 2.14 is the last release that ships it.
+```shell
+pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu126
+pip install chatterbox-tts
+```
+For other setups, see the [PyTorch install selector](https://pytorch.org/get-started/locally/).
+
 ## Usage
 
 ##### Chatterbox-Turbo
