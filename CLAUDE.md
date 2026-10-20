@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 - Install (editable): `pip install -e .` (Python >=3.10; README says developed on 3.11). This is the only thing CI runs (`.github/workflows/install_check.yml`, Python 3.10).
-- There is **no test suite and no linter config**. Verify changes by running the example scripts at the repo root (`example_tts.py`, `example_tts_turbo.py`, `example_tts_nano.py`, `example_vc.py`, `example_for_mac.py`) or the Gradio demos (`gradio_tts_app.py`, `gradio_tts_turbo_app.py`, `gradio_vc_app.py`, `multilingual_app.py`). Weights download from Hugging Face on first use.
+- There is **no test suite and no linter config**. Verify changes by running the example scripts at the repo root (`example_tts.py`, `example_tts_turbo.py`, `example_tts_nano.py`, `example_vc.py`, `example_for_mac.py`) or the Gradio demos (`gradio_tts_app.py`, `gradio_tts_turbo_app.py`, `gradio_vc_app.py`, `multilingual_app.py`). Weights download from Hugging Face on first use. `example_tts.py`, `example_vc.py` and `example_for_mac.py` fall back to CPU, so they run as-is on the CPU-only dev machine. `example_tts_turbo.py` and `example_tts_nano.py` hardcode `device="cuda"`; run them with that changed to `"cpu"`.
 - Quick CPU smoke test: `ChatterboxMultilingualTTS.from_pretrained(device="cpu")`, generate `language_id="en"` and `"fr"`, check output length and finite samples.
 
 ## Architecture
@@ -35,3 +35,9 @@ Cross-cutting behavior to preserve:
 ## Branch context
 
 Branch `relax-dependency-pins` loosened the exact pins in `pyproject.toml` so ebook2audiobook (e2a) can use chatterbox. Chatterbox stays a standalone project: the maintainer will not take regressions for a project they don't own, so a change is acceptable only if standalone chatterbox works as before (old pins still pass, see the floor test). e2a's `requirements.txt` resolves with the relaxed pins; the pins are tested on CPU only. `DEPENDENCY_MIGRATION.md` holds the old pins, constraints and results. Read it before touching dependencies.
+
+Owning the acceptance bar:
+- The bar covers everything a user runs: the library, the `example_*.py` scripts, README snippets and the Gradio apps. Anything that works under the old pins and fails under the relaxed ones is a **regression**. Lead with that word in the report, then fix it or propose a fix, and record it in `DEPENDENCY_MIGRATION.md`.
+- A replacement call must reach **parity** with what the old pins produced: compare the output (bytes, or format, header and samples) in the old-pin venv, not just that it runs.
+- Every result or caveat you write names the command that showed it. A caveat lists only what was actually left unchecked; check your own earlier output (greps, logs) before writing one.
+- Test venvs in `~/.venvs/`: `chatterbox-baseline` (old pins, Python 3.12), `chatterbox-floor310` / `chatterbox-floor311` (old pins on 3.10 / 3.11), `chatterbox-relaxed` (torch 2.14.1, torchaudio 2.11, numpy 2), `e2a-chatterbox` (e2a's requirements, torch 2.7.1). Smoke scripts live in `~/chatterbox-smoke/`. Run each model load in its own process under `systemd-run --user --scope -q -p MemoryMax=6G -p MemorySwapMax=0`.
