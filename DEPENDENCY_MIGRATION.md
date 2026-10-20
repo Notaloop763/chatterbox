@@ -65,13 +65,15 @@ Also resolved: librosa 1.0.0, diffusers 0.41.0, safetensors 0.8.0, gradio 6.30.0
 coqui-tts 0.27.5 only requires `numpy>=1.26.0`, so dropping the `<2` cap does not conflict.
 Found by the reference-audio test: `ChatterboxTurboTTS.norm_loudness` upcast the wav to float64 under numpy 2 (`np.float64` gain times a float32 array) and crashed the mel filter step. Fixed with `float(...)` in `tts_turbo.py`; Turbo, Nano and cloning for the other three classes pass after that on 3.12 and 3.10.
 Floors: the old pins (numpy 1.26.4, torch 2.6.0, transformers 5.2.0, diffusers 0.29.0, librosa 0.11.0, safetensors 0.5.3, gradio 6.8.0, conformer 0.3.2, pykakasi 2.3.0) were installed together and passed all four classes (multilingual, Turbo, Nano with default voice; TTS, multilingual, Turbo, VC with a reference clip). numpy floor raised from 1.24 to 1.26 because 1.26 is the lowest tested (and coqui-tts needs it).
-Reference-audio cloning and VC (all four classes) also pass on 3.11 (torch 2.14.1), 3.10 (torch 2.14.1), 3.12 with torch 2.7.1 (the e2a venv), and the old-pin floors on 3.10 (torch 2.6.0, numpy 1.26.4, transformers 5.2.0), along with the default-voice smoke tests there. The numpy floor of 1.26 is the lowest tested; the original 1.24 floor was never exercised.
+Reference-audio cloning and VC (all four classes) also pass on 3.11 (torch 2.14.1), 3.10 (torch 2.14.1), 3.12 with torch 2.7.1 (the e2a venv), and the old-pin floors on 3.10 and 3.11 (torch 2.6.0, numpy 1.26.4, transformers 5.2.0), along with the default-voice smoke tests there. The numpy floor of 1.26 is the lowest tested; the original 1.24 floor was never exercised.
+`resemble-perth`: keep the git `@master` dependency (1.1.0). The PyPI release 1.0.1 imports `pkg_resources` without declaring setuptools, so in a clean venv `perth.PerthImplicitWatermarker` is `None` and every `generate` crashes with `'NoneType' object is not callable`.
+Intel iGPU (Tiger Lake Iris Xe, torch 2.7.1+xpu, 2026-10-19): not usable. `device="xpu"` first fails loading CUDA-saved checkpoints (the `map_location` branch only covers `cpu` and `mps`; a code change, unrelated to the pins). With that bypassed, the first compare-and-sum kernel fails with `RuntimeError: UR error`, in plain torch with no chatterbox code. Tiger Lake is not on PyTorch's supported XPU list. GPU remains untested.
 The scripts live outside the repo (`~/chatterbox-smoke/`).
 
 e2a venv check (2026-10-19): e2a `requirements.txt` + `torch==2.7.1`/`torchaudio==2.7.1` + this package resolves with `uv pip compile` on 3.12 and 3.10 (3.12: numpy 2.5.4, transformers 5.20.2, librosa 1.0.0, gradio 6.29.1, coqui-tts 0.27.5; 3.10: numpy 2.2.6, librosa 0.11.0). Installed on 3.12 (CPU smoke test: multilingual en/fr, Turbo, Nano all pass; `pip check` clean). e2a installs torch separately via its `torch_matrix`, so it is not in its `requirements.txt`; 2.7.1 is its base.
 
 ## Not covered
 
-- GPU backends (CUDA, ROCm, XPU, MPS). No GPU on the dev machine.
+- GPU backends (CUDA, ROCm, XPU, MPS). The dev machine has only a Tiger Lake iGPU, which fails on XPU (see Results).
 - Audio quality (only length and finite samples are checked) and the Gradio demo apps.
 - torch 2.4 and 2.5 (the `>=2.6` floor excludes them).
