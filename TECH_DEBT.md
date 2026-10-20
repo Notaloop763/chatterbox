@@ -137,6 +137,7 @@ Removing the dead and duplicated code below saves about 1,000 lines and 2 depend
   shapes bind. Whether the pages load and generate audio is untested.
 - Fix: in a venv with `pip install -e ".[demo]"`, start each app on CPU and run one generation.
 - If skipped: a demo that fails at launch is found by a user, not by us.
+- Status (2026-10-19): done on CPU. All four apps launched and generated via `gradio_client` on gradio 6.30.0 and 6.8.0 (details in `DEPENDENCY_MIGRATION.md`). Browser UI not clicked through.
 
 ## Not checked
 

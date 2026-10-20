@@ -11,7 +11,7 @@ Status (2026-10-19): **pins relaxed in `pyproject.toml`; CPU matrix complete.** 
 classes pass default-voice and reference-audio tests on Python 3.10, 3.11 and 3.12, with the old
 pins (floors), torch 2.6.0, 2.7.1 and 2.14.1, and e2a's `requirements.txt` plus torch 2.7.1
 resolves. `resemble-perth` stays on git `@master` (PyPI 1.0.1 is broken, see Results).
-Open: the Gradio demo apps have not been launched (`TECH_DEBT.md` item 19); GPU backends cannot be
+Gradio demo apps launched and generated on CPU through the UI API (see Results). GPU backends cannot be
 tested on the dev machine (its Tiger Lake iGPU is unsupported by PyTorch XPU).
 
 ## Constraints from e2a (`lib/conf.py`, `requirements.txt`)
@@ -75,8 +75,10 @@ The scripts live outside the repo (`~/chatterbox-smoke/`).
 
 e2a venv check (2026-10-19): e2a `requirements.txt` + `torch==2.7.1`/`torchaudio==2.7.1` + this package resolves with `uv pip compile` on 3.12 and 3.10 (3.12: numpy 2.5.4, transformers 5.20.2, librosa 1.0.0, gradio 6.29.1, coqui-tts 0.27.5; 3.10: numpy 2.2.6, librosa 0.11.0). Installed on 3.12 (CPU smoke test: multilingual en/fr, Turbo, Nano all pass; `pip check` clean). e2a installs torch separately via its `torch_matrix`, so it is not in its `requirements.txt`; 2.7.1 is its base.
 
+Gradio demos (2026-10-19, CPU, Python 3.12): `gradio_tts_app`, `gradio_tts_turbo_app`, `gradio_vc_app` and `multilingual_app` each launched and generated via `gradio_client` with a reference clip (TTS, Turbo, VC; multilingual `en` and `fr`; finite output, 2 to 3 s, VC 12 s). Passed with the relaxed pins (gradio 6.30.0, torch 2.14.1) and the old-pin floors (gradio 6.8.0, torch 2.6.0). Launched with `share=False` and `mcp_server` dropped; one app at a time under a 9G cgroup limit. Turbo app logs a harmless `gr.Blocks(css=...)` deprecation warning (Gradio 6). Browser UI not clicked through.
+
 ## Not covered
 
 - GPU backends (CUDA, ROCm, XPU, MPS). The dev machine has only a Tiger Lake iGPU, which fails on XPU (see Results).
-- Audio quality (only length and finite samples are checked) and the Gradio demo apps.
+- Audio quality (only length and finite samples are checked) and clicking through the demo UIs in a browser.
 - torch 2.4 and 2.5 (the `>=2.6` floor excludes them).
