@@ -7,9 +7,12 @@ Acceptance bar: standalone chatterbox works as before. The upstream maintainer w
 regressions for e2a's sake, so every relaxed pin must keep the old pins' versions working (the
 "Floors" row under Results). e2a compatibility is the motivation, not a test target.
 
-Status: **pins relaxed in `pyproject.toml`; smoke-tested on CPU only** (see "Results").
-`resemble-perth` is still the git `@master` dependency. e2a's `requirements.txt` plus
-torch 2.7.1 resolves and passes the smoke test (see "Results").
+Status (2026-10-19): **pins relaxed in `pyproject.toml`; CPU matrix complete.** All four
+classes pass default-voice and reference-audio tests on Python 3.10, 3.11 and 3.12, with the old
+pins (floors), torch 2.6.0, 2.7.1 and 2.14.1, and e2a's `requirements.txt` plus torch 2.7.1
+resolves. `resemble-perth` stays on git `@master` (PyPI 1.0.1 is broken, see Results).
+Open: the Gradio demo apps have not been launched (`TECH_DEBT.md` item 19); GPU backends cannot be
+tested on the dev machine (its Tiger Lake iGPU is unsupported by PyTorch XPU).
 
 ## Constraints from e2a (`lib/conf.py`, `requirements.txt`)
 
