@@ -92,7 +92,7 @@ VC numerical drift on CUDA (same run): VC samples noise in its decoder (`torch.r
 - Turning cuDNN TF32 off restores the isolated operations exactly, but brings the full pipeline only to 86 to 101 dB.
 - Transcripts of the 24 VC clips match.
 
-Not applied: forcing TF32 off would change behaviour for every user and still not restore parity. Not checked: listening, speaker similarity, more than one VC source clip.
+Decision (2026-10-20): drift accepted. It is not counted as a regression because the pins do not cause it and nothing fails. Not applied: forcing TF32 off would change behaviour for every user and still not restore parity. Not checked: listening, speaker similarity, more than one VC source clip.
 e2a pipeline: e2a `main` (0a98ac31) has no chatterbox engine (`grep -rli chatterbox --include=*.py --include=*.txt --include=*.toml` finds nothing; its README lists chatterbox as an unchecked TODO), so there is no pipeline run to do beyond the venv check above.
 
 ## Not covered
