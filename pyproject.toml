@@ -10,12 +10,13 @@ authors = [
 ]
 dependencies = [
     "numpy>=1.26.0",
-    "librosa>=0.11.0",
+    "librosa>=0.11.0,<1.0",
+    "soundfile>=0.12.1",
     "s3tokenizer",
     "torch>=2.6",
     "torchaudio>=2.6",
     "transformers>=5.2",
-    "diffusers>=0.29",
+    "diffusers>=0.29,<1.0",
     "resemble-perth @ git+https://github.com/resemble-ai/Perth.git@master",
     "conformer>=0.3.2",
     "safetensors>=0.5.3",
