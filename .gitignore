@@ -46,3 +46,6 @@ checkpoints/
 
 # Ignore generated sample .wav files
 **/*.wav
+
+# Local agent configuration (not part of the package)
+opencode.json
