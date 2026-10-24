@@ -83,6 +83,8 @@ Tiers: (1) fails at import for every user, (2) fails for every user at construct
 - **read** `diffusers/models/lora.py:~393` (0.41.0; the same line exists in 0.29.0): `LoRACompatibleLinear.__init__` calls `deprecate("LoRACompatibleLinear", "1.0.0", msg)`. `utils/deprecation_utils.py:80-84`: if the installed base version `>= "1.0.0"` it raises `ValueError("The deprecation tuple ... should be removed since diffusers' version ... is >= 1.0.0")`. The file header says it "is deprecated and will be removed soon".
 - Live path: `FeedForward` (`matcha/transformer.py:126`, and `SnakeBeta` at `:48`) <- `BasicTransformerBlock` <- `s3gen/decoder.py:148,172,201`. Every `S3Gen()` construction hits it. Newest today is 0.41.0, so this is a time bomb, plus a `FutureWarning` per layer today.
 - Smallest fix: replace `LoRACompatibleLinear` with `nn.Linear` at `matcha/transformer.py:13,48,126`. It is an `nn.Linear` subclass whose extra `lora_layer` is `None` and not a parameter, so state-dict keys and outputs are identical (**read**). Fallback: `diffusers<1.0`.
+- **Decision (2026-10-23):** take the fallback for now, `diffusers>=0.29,<1.0`; it keeps the
+  e2a-resolved 0.41.0 working. Replace `LoRACompatibleLinear` and drop the cap in a follow-up.
 - Other diffusers symbols on the live path were compared 0.29 -> 0.41: `Attention.__init__` still accepts every kwarg the repo passes; `AttnProcessor2_0.__call__` and `prepare_attention_mask` differ only by type hints, an unused `norm_q`/`norm_k` (default `None`) and `output_size=` on `repeat_interleave` (**read**, diffed). The `AdaLayerNorm*` branches are not reached (`num_embeds_ada_norm` is never passed).
 
 ### R3. Tier 3 (one path): librosa 1.0.0
@@ -90,6 +92,8 @@ Tiers: (1) fails at import for every user, (2) fails for every user at construct
 - Also **read**: 1.0.0 requires `numpy>=2.1` and Python >=3.12, so `librosa>=0.11` silently drags numpy to 2.x on 3.12+, which the migration doc already lists as "likely the main source of fails" for coexistence with e2a.
 - Call shapes all bind: `load(path, sr=)`, `resample(y, orig_sr=, target_sr=[, res_type=])`, `filters.mel(sr=, n_fft=, n_mels=[, fmin=, fmax=])` (keyword-only, matches), `stft(..., pad_mode="reflect")` (explicit, so the 0.8 default change does not apply), `effects.trim(top_db=)`.
 - Smallest fix: `librosa>=0.11,<1` if reference-clip formats or numpy 1 matter; otherwise accept 1.0 and document the format loss.
+- **Decision (2026-10-23):** capped at `librosa>=0.11,<1.0` after reproducing the `.m4a`/AAC
+  failure under 1.0 (see `DEPENDENCY_MIGRATION.md` Results). 0.11.0 was retested with numpy 2.5.4.
 - Latent, same in both versions (not a pin issue): `voice_encoder.py:262` uses `res_type="kaiser_fast"`, which needs `resampy`, in no requirement list (**read**: `librosa/core/audio.py` lazy-loads it). All callers pass `sample_rate=S3_SR` (16 kHz), so the branch is not taken (inferred from `tts.py:198`, `mtl_tts.py:270`, `tts_turbo.py:262`).
 
 ### R4. Tier 3 (one path, examples only): torchaudio >=2.9
